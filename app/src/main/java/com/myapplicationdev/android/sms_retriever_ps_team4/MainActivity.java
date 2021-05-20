@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
@@ -24,5 +23,6 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frame2, f2);
 
         ft.commit();
+
     }
 }
