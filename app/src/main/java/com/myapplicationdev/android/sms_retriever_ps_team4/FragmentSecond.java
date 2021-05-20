@@ -102,12 +102,11 @@ public class FragmentSecond extends Fragment {
                 ContentResolver cr = getActivity().getContentResolver();
 
                 //The filter String
-                String filter="body LIKE ?";
+                String filter = "body LIKE ?";
                 //the matches for the ?
                 String sms = etSMS2.getText().toString();
-                String[] filterArgs = {"%"+sms+"%"};
-
-                Cursor cursor = cr.query(uri,reqCols,filter,filterArgs,null);
+                String[] filterArgs = {"%" + sms + "%"};
+                Cursor cursor = cr.query(uri, reqCols, filter, filterArgs, null);
                 String smsBody = "";
                 if (cursor.moveToFirst()) {
                     do {
@@ -139,11 +138,20 @@ public class FragmentSecond extends Fragment {
                 ContentResolver cr = getActivity().getContentResolver();
 
                 //The filter String
-                String filter = "body LIKE ?";
+
                 //the matches for the ?
+                String filter = "body LIKE ?";
+               String[] split = etSMS2.getText().toString().split("");
+               String[] ar = new String[split.length];
+               ar[0] = "%"+split[0]+"%";
                 String sms = etSMS2.getText().toString();
-                String[] filterArgs = {"%" + sms + "%"};
-                Cursor cursor = cr.query(uri, reqCols, filter, filterArgs, null);
+                String[] smsA = sms.split(" ");
+                for (int i = 1; i < split.length; i++) {
+                    filter += " OR body LIKE ?";
+                    ar[i] = "%" + split[i] + "%";
+                }
+
+                Cursor cursor = cr.query(uri, reqCols, filter, ar, null);
                 String smsBody = "";
                 if (cursor.moveToFirst()) {
                     do {
