@@ -63,7 +63,7 @@ public class FragmentSecond extends Fragment {
 
 //Advanced Enhancement
         @Override
-        public View onCreateView (LayoutInflater inflater, ViewGroup container,
+        public View onCreateView (LayoutInflater inflate, ViewGroup container,
                 Bundle savedInstanceState){
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_second, container, false);
