@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "SMS_Retriever_PS_Team4"
