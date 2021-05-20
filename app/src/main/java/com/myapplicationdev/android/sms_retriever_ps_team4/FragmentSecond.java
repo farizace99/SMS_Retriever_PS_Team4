@@ -88,14 +88,48 @@ public class FragmentSecond extends Fragment {
                 int permissionCheck = PermissionChecker.checkSelfPermission
                         ((MainActivity) getActivity(), Manifest.permission.READ_SMS);
 
-                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED) {
+                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED){
                     ActivityCompat.requestPermissions((MainActivity) getActivity(),
                             new String[]{Manifest.permission.READ_SMS}, 0);
                     //stops the action from proceeding further as permission not
                     //granted yet
                     return;
-                }}
-            });
+                }
+                //Create all message URI
+                Uri uri = Uri.parse("content://sms");
+                String[] reqCols = new String[]{"date","address","body","type"};
+
+                ContentResolver cr = getActivity().getContentResolver();
+
+                //The filter String
+                String filter="body LIKE ?";
+                //the matches for the ?
+                String sms = etSMS2.getText().toString();
+                String[] filterArgs = {"%"+sms+"%"};
+
+                Cursor cursor = cr.query(uri,reqCols,filter,filterArgs,null);
+                String smsBody = "";
+                if (cursor.moveToFirst()) {
+                    do {
+                        long dateInMillis = cursor.getLong(0);
+                        String date = (String) DateFormat
+                                .format("dd MM yyyy h:mm:ss aa",dateInMillis);
+                        String address = cursor.getString(1);
+                        String body = cursor.getString(2);
+                        String type = cursor.getString(3);
+                        if (type.equalsIgnoreCase("1")){
+                            type = "Inbox:";
+                        } else{
+                            type = "Sent:";
+                        }
+                        smsBody += type + " " + address + "\n at " + date
+                                + "\n\"" + body + "\"\n\n";
+                    } while (cursor.moveToNext());
+                }
+                tvShowFrag2.setText(smsBody);
+
+            }
+        });
         // Advanced enhancement
         btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +168,29 @@ public class FragmentSecond extends Fragment {
             }
         });
         return view;
-    }
 
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case 0: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the read SMS
+                    //  as if the btnRetrieve is clicked
+                    btnEmail.performClick();
+
+                } else {
+                    // permission denied... notify user
+                    Toast.makeText((MainActivity) getActivity(), "Permission not granted",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+    }
 
 }
